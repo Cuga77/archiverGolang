@@ -2,20 +2,20 @@ package table
 
 import "strings"
 
-type DecodingTree struct {
+type decodingTree struct {
 	Value string
-	Zero  *DecodingTree
-	One   *DecodingTree
+	Zero  *decodingTree
+	One   *decodingTree
 }
 
 type Generator interface {
-	NewTable(text string) DecodingTree
+	NewTable(text string) decodingTree
 }
 
 type EncodingTable map[rune]string
 
-func (et EncodingTable) DecodingTree() DecodingTree {
-	res := DecodingTree{}
+func (et EncodingTable) decodingTree() decodingTree {
+	res := decodingTree{}
 
 	for ch, code := range et {
 		res.add(code, ch)
@@ -24,7 +24,7 @@ func (et EncodingTable) DecodingTree() DecodingTree {
 	return res
 }
 
-func (dt *DecodingTree) Decode(str string) string {
+func (dt *decodingTree) Decode(str string) string {
 	var buf strings.Builder
 
 	currNode := dt
@@ -52,20 +52,20 @@ func (dt *DecodingTree) Decode(str string) string {
 	return buf.String()
 }
 
-func (dt *DecodingTree) add(code string, value rune) {
+func (dt *decodingTree) add(code string, value rune) {
 	currNode := dt
 
 	for _, ch := range code {
 		switch ch {
 		case '0':
 			if currNode.Zero == nil {
-				currNode.Zero = &DecodingTree{}
+				currNode.Zero = &decodingTree{}
 			}
 
 			currNode = currNode.Zero
 		case '1':
 			if currNode.One == nil {
-				currNode.One = &DecodingTree{}
+				currNode.One = &decodingTree{}
 			}
 
 			currNode = currNode.One
